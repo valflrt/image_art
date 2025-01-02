@@ -97,7 +97,20 @@ fn experiment1(width: u32, height: u32) -> RgbaImage {
                 }
             }
 
-            s.send((x, y, most_distant)).unwrap();
+            // make color more pastel
+
+            let Rgba([r, g, b, a]) = most_distant;
+
+            let r = (r as f32 / 255. + 0.2).min(1.) * 0.9 + 0.1;
+            let g = (g as f32 / 255. + 0.2).min(1.) * 0.9 + 0.1;
+            let b = (b as f32 / 255. + 0.2).min(1.) * 0.9 + 0.1;
+
+            s.send((
+                x,
+                y,
+                Rgba([(r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8, a]),
+            ))
+            .unwrap();
         });
 
     for (x, y, color) in rx {
