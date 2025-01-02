@@ -9,30 +9,29 @@ use util::scale_no_interpolation;
 
 fn main() {
     let img = scale_no_interpolation(&experiment1(256, 256), 4);
-    img.save("outputs/experiment1.png").unwrap();
+    img.save("img.png").unwrap();
 }
 
 fn experiment1(width: u32, height: u32) -> RgbaImage {
     // init image
 
+    const COLOR_COUNT: usize = 8;
+
+    let colors = (0..COLOR_COUNT)
+        .map(|_| {
+            Rgba([
+                fastrand::u8(20..250),
+                fastrand::u8(20..250),
+                fastrand::u8(20..250),
+                255,
+            ])
+        })
+        .collect::<Vec<_>>();
+
     let mut img = RgbaImage::new(width, height);
 
     for p in img.pixels_mut() {
-        *p = Rgba([
-            fastrand::u8(10..225),
-            fastrand::u8(10..225),
-            fastrand::u8(10..225),
-            255,
-        ]);
-    }
-
-    // quantize
-
-    const STEP: u8 = 255 / 4;
-    for (_, _, pixel) in img.enumerate_pixels_mut() {
-        for channel in &mut pixel.0 {
-            *channel = (*channel / STEP) * STEP;
-        }
+        *p = *fastrand::choice(&colors).unwrap();
     }
 
     // apply effect1
@@ -40,12 +39,6 @@ fn experiment1(width: u32, height: u32) -> RgbaImage {
     const AVG_K_SIZE: i32 = 32;
     const MD_K_SIZE: i32 = 24;
     effect1(&mut img, AVG_K_SIZE, MD_K_SIZE);
-
-    // make colors more pastel
-
-    for v in img.iter_mut() {
-        *v = (((*v as f32 / 255. + 0.3).min(1.) * 0.8 + 0.2) * 255.) as u8;
-    }
 
     img
 }
