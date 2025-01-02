@@ -35,14 +35,28 @@ fn experiment1(width: u32, height: u32) -> RgbaImage {
         }
     }
 
-    // effect
+    // apply effect1
 
-    /// Kernel size for average
     const AVG_K_SIZE: i32 = 32;
-    /// Kernel size for finding most distant
     const MD_K_SIZE: i32 = 24;
+    effect1(&mut img, AVG_K_SIZE, MD_K_SIZE);
 
-    let mut new_img = RgbaImage::new(width, height);
+    // make colors more pastel
+
+    for v in img.iter_mut() {
+        *v = (((*v as f32 / 255. + 0.3).min(1.) * 0.8 + 0.2) * 255.) as u8;
+    }
+
+    img
+}
+
+fn effect1(img: &mut RgbaImage, avg_k_size: i32, md_k_size: i32) {
+    // avg_k_size: Kernel size for average
+    // md_k_size: Kernel size for finding most distant color
+
+    let (width, height) = img.dimensions();
+
+    let old_img = img.clone();
 
     let (tx, rx) = mpsc::channel();
 
@@ -50,15 +64,15 @@ fn experiment1(width: u32, height: u32) -> RgbaImage {
         .flat_map(|y| (0..width).map(move |x| (x, y)))
         .par_bridge()
         .for_each_with(tx, |s, (x, y)| {
-            let (r_sum, g_sum, b_sum, sum) = (-AVG_K_SIZE..=AVG_K_SIZE)
-                .flat_map(|j| (-AVG_K_SIZE..=AVG_K_SIZE).map(move |i| (i, j)))
+            let (r_sum, g_sum, b_sum, sum) = (-avg_k_size..=avg_k_size)
+                .flat_map(|j| (-avg_k_size..=avg_k_size).map(move |i| (i, j)))
                 .fold(
                     (0., 0., 0., 0.),
                     |(acc_r, acc_g, acc_b, acc_sum), (i, j)| {
                         let xx = x.wrapping_add_signed(i) % width;
                         let yy = y.wrapping_add_signed(j) % height;
 
-                        let &Rgba([r, g, b, _]) = img.get_pixel(xx, yy);
+                        let &Rgba([r, g, b, _]) = old_img.get_pixel(xx, yy);
 
                         (
                             acc_r + r as f32,
@@ -79,12 +93,12 @@ fn experiment1(width: u32, height: u32) -> RgbaImage {
             let mut most_distant = center_color;
             let mut max_distance = 0;
 
-            for j in -MD_K_SIZE..=MD_K_SIZE {
-                for i in -MD_K_SIZE..=MD_K_SIZE {
+            for j in -md_k_size..=md_k_size {
+                for i in -md_k_size..=md_k_size {
                     let xx = x.saturating_add_signed(i).min(width - 1);
                     let yy = y.saturating_add_signed(j).min(height - 1);
 
-                    let &color = img.get_pixel(xx, yy);
+                    let &color = old_img.get_pixel(xx, yy);
 
                     let distance = (center_color[0] - color[0]).pow(2)
                         + (center_color[1] - color[1]).pow(2)
@@ -97,25 +111,10 @@ fn experiment1(width: u32, height: u32) -> RgbaImage {
                 }
             }
 
-            // make color more pastel
-
-            let Rgba([r, g, b, a]) = most_distant;
-
-            let r = (r as f32 / 255. + 0.3).min(1.) * 0.8 + 0.2;
-            let g = (g as f32 / 255. + 0.3).min(1.) * 0.8 + 0.2;
-            let b = (b as f32 / 255. + 0.3).min(1.) * 0.8 + 0.2;
-
-            s.send((
-                x,
-                y,
-                Rgba([(r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8, a]),
-            ))
-            .unwrap();
+            s.send((x, y, most_distant)).unwrap();
         });
 
     for (x, y, color) in rx {
-        new_img.put_pixel(x, y, color);
+        img.put_pixel(x, y, color);
     }
-
-    new_img
 }
