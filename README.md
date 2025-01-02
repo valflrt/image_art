@@ -1,6 +1,6 @@
 # image_art
 
-Some image art experiments...
+Some image experiments...
 
 ## experiment1
 
