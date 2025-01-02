@@ -101,9 +101,9 @@ fn experiment1(width: u32, height: u32) -> RgbaImage {
 
             let Rgba([r, g, b, a]) = most_distant;
 
-            let r = (r as f32 / 255. + 0.2).min(1.) * 0.9 + 0.1;
-            let g = (g as f32 / 255. + 0.2).min(1.) * 0.9 + 0.1;
-            let b = (b as f32 / 255. + 0.2).min(1.) * 0.9 + 0.1;
+            let r = (r as f32 / 255. + 0.3).min(1.) * 0.8 + 0.2;
+            let g = (g as f32 / 255. + 0.3).min(1.) * 0.8 + 0.2;
+            let b = (b as f32 / 255. + 0.3).min(1.) * 0.8 + 0.2;
 
             s.send((
                 x,
