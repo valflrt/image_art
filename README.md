@@ -4,7 +4,7 @@ Some image experiments...
 
 ## exp1
 
-This takes an average of the color around a pixel and then finds the most distant color from the average color.
+This starts from a random image and computes the average of the colors around a pixel and then sets the new color of the pixel to the most distant color from the average color in neighboring pixels.
 
 <span>
 <img src="./outputs/exp1/sfxbpg.png" width="192">
@@ -18,7 +18,7 @@ This takes an average of the color around a pixel and then finds the most distan
 
 ## exp2
 
-This starts random marches from each pixel until it finds the starting pixel color.
+This starts from a random image and takes random marches from each pixel until it finds the starting pixel color and then color the path taken in this color.
 
 <span>
 <img src="./outputs/exp2/iotodw.png" width="192">
