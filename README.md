@@ -26,3 +26,9 @@ This starts from a random image and takes random marches from each pixel until i
 <img src="./outputs/exp2/lyhakp.png" width="192">
 <img src="./outputs/exp2/xmhxnz.png" width="192">
 </span>
+
+## exp3
+
+This is a plot of the greatest common divisors of integers.
+
+<img src="./outputs/exp3/hkfaqr.png" width="256">
