@@ -29,6 +29,8 @@ This starts from a random image and takes random marches from each pixel until i
 
 ## exp3
 
-This is a plot of the greatest common divisors of integers.
+This is a plot of the greatest common divisors (gcd) of pairs of integers. Comprime integers are colored in black (their gcd is 1).
 
-<img src="./outputs/exp3/hkfaqr.png" width="256">
+Notice how prime numbers are numbers such that the corresponding row/column is white all the way to the diagonal ! (They should be black but I chose to make them white to make them stand out). It means such numbers have a gcd of 1 with any other lower integer.
+
+<img src="./outputs/exp3/hkfaqr.png" width="512">

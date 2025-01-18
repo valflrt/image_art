@@ -3,18 +3,21 @@ use std::{fs, sync::mpsc};
 use image::{Rgba, RgbaImage};
 use rayon::prelude::*;
 
+use crate::util::scale_no_interpolation;
+
 #[allow(dead_code)]
 pub enum ColorSource {
     FromFile,
     Random { save_colors: bool },
 }
 
-pub fn gen(width: u32, height: u32, color_source: ColorSource) -> RgbaImage {
-    const OUTPUT_FILE_NAME: &str = "img";
+pub fn gen() {
+    const WIDTH: u32 = 256;
+    const HEIGHT: u32 = 256;
+    const COLOR_SOURCE: ColorSource = ColorSource::Random { save_colors: true };
+    const SCALE: u32 = 4;
 
-    // init image
-
-    let colors = match color_source {
+    let colors = match COLOR_SOURCE {
         ColorSource::Random { save_colors } => {
             const COLOR_COUNT: usize = 8;
 
@@ -31,7 +34,7 @@ pub fn gen(width: u32, height: u32, color_source: ColorSource) -> RgbaImage {
 
             if save_colors {
                 fs::write(
-                    OUTPUT_FILE_NAME.to_string() + ".colors.json",
+                    "img.colors.json",
                     serde_json::to_string_pretty(&colors.iter().map(|c| c.0).collect::<Vec<_>>())
                         .unwrap(),
                 )
@@ -43,7 +46,7 @@ pub fn gen(width: u32, height: u32, color_source: ColorSource) -> RgbaImage {
         ColorSource::FromFile => serde_json::from_reader::<_, Vec<[u8; 4]>>(
             fs::OpenOptions::new()
                 .read(true)
-                .open(OUTPUT_FILE_NAME.to_string() + ".colors.json")
+                .open("img.colors.json")
                 .unwrap(),
         )
         .unwrap()
@@ -52,7 +55,7 @@ pub fn gen(width: u32, height: u32, color_source: ColorSource) -> RgbaImage {
         .collect::<Vec<_>>(),
     };
 
-    let mut img = RgbaImage::new(width, height);
+    let mut img = RgbaImage::new(WIDTH, HEIGHT);
 
     img.par_pixels_mut()
         .for_each(|p| *p = *fastrand::choice(&colors).unwrap());
@@ -63,7 +66,7 @@ pub fn gen(width: u32, height: u32, color_source: ColorSource) -> RgbaImage {
     const MD_K_SIZE: i32 = 24;
     effect1(&mut img, AVG_K_SIZE, MD_K_SIZE);
 
-    img
+    scale_no_interpolation(&img, SCALE).save("img.png").unwrap();
 }
 
 pub fn effect1(img: &mut RgbaImage, avg_k_size: i32, md_k_size: i32) {
