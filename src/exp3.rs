@@ -30,7 +30,7 @@ pub fn gen(width: u32, height: u32) -> RgbaImage {
     for i in 0..width {
         for j in 0..height {
             if let &Some(d) = gcd_img.get((i as usize, j as usize)).unwrap() {
-                let v = d as f64 / max as f64;
+                let v = 1. - d as f64 / max as f64;
 
                 img.put_pixel(i, j, hsv_to_rgb(255. * v, 1., 1.));
             }
