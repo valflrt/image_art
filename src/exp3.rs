@@ -15,7 +15,7 @@ pub fn gen() {
     let mut max = 0;
     for i in 0..WIDTH {
         for j in 0..i + 1 {
-            let d = gcd(i + 1, j + 1);
+            let d = gcd(i, j);
             max = d.max(max);
             gcd_img.set((i as usize, j as usize), Some(d)).unwrap();
         }
@@ -24,16 +24,16 @@ pub fn gen() {
     let mut img = RgbaImage::new(WIDTH, HEIGHT);
 
     for i in 0..WIDTH {
-        let is_prime = (0..i).fold(true, |acc, j| {
+        let is_prime = (1..i).fold(true, |acc, j| {
             acc && gcd_img
                 .get((i as usize, j as usize))
                 .unwrap()
                 .map(|v| v == 1)
                 .unwrap_or(false)
-        });
+        }) && i != 1;
         for j in 0..i + 1 {
             if let &Some(d) = gcd_img.get((i as usize, j as usize)).unwrap() {
-                if d == 1 {
+                if d == 1 && i != 1 {
                     let color = if is_prime {
                         Rgba([220, 220, 220, 255])
                     } else {
