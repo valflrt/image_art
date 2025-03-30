@@ -14,7 +14,10 @@ pub enum ColorSource {
 pub fn gen() {
     const WIDTH: u32 = 256;
     const HEIGHT: u32 = 256;
+    // const WIDTH: u32 = 1920 / 4;
+    // const HEIGHT: u32 = 1080 / 4;
     const COLOR_SOURCE: ColorSource = ColorSource::Random { save_colors: true };
+    // const COLOR_SOURCE: ColorSource = ColorSource::FromFile;
     const SCALE: u32 = 4;
 
     let colors = match COLOR_SOURCE {

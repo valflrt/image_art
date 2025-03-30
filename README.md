@@ -10,9 +10,11 @@ This starts from a random image and computes the average of the colors around a 
 <img src="./outputs/exp1/sfxbpg.png" width="192">
 <img src="./outputs/exp1/qehzel.png" width="192">
 <img src="./outputs/exp1/zuzsay.png" width="192">
+<img src="./outputs/exp1/rcbenz.png" width="192">
 <img src="./outputs/exp1/jftgux.png" width="192">
 <img src="./outputs/exp1/jgrdzj.png" width="192">
 <img src="./outputs/exp1/gwbexd.png" width="192">
+<img src="./outputs/exp1/ybhwhh.png" width="192">
 <img src="./outputs/exp1/hgcbee.png" width="192">
 </span>
 
