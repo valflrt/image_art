@@ -2,6 +2,8 @@
 
 Some image experiments...
 
+> Images found in this repository are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
 ## exp1
 
 This starts from a random image and computes the average of the colors around a pixel and then sets the new color of the pixel to the most distant color from the average color in neighboring pixels.
